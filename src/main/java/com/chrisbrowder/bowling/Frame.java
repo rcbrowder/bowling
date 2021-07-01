@@ -3,11 +3,11 @@ package com.chrisbrowder.bowling;
 import lombok.Getter;
 @Getter
 public class Frame {
-    private Integer firstRoll;
-    private Integer secondRoll;
-    private Integer score = 0;
-    private Integer currentGameScore;
-    private boolean closed = false;
+    protected Integer firstRoll;
+    protected Integer secondRoll;
+    protected Integer score = 0;
+    protected Integer currentGameScore;
+    protected boolean closed = false;
 
     /**
      * Sets frame state after player roll.
