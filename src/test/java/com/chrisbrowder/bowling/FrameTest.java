@@ -4,8 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class FrameTest {
     private Frame frame;
@@ -26,10 +26,7 @@ public class FrameTest {
     @DisplayName("Test Score on First Roll")
     public void testScoreOnFirstRoll() {
         frame.roll(1);
-        assertAll(
-                () -> assertEquals(1, frame.getScore()),
-                () -> assertEquals(1, frame.getCurrentGameScore())
-        );
+       assertEquals(1, frame.getScore(), "Score");
 
     }
 
@@ -49,9 +46,42 @@ public class FrameTest {
     public void testScoreOnSecondRoll() {
         frame.roll(1);
         frame.roll(1);
+        assertEquals(2, frame.getScore());
+    }
+
+    @Test
+    @DisplayName("Test Spare Check")
+    public void testIsSpare() {
+        frame.setFirstRoll(9);
+        frame.setSecondRoll(1);
+        assertTrue(frame.isSpare());
+
+        frame.setFirstRoll(0);
+        frame.setSecondRoll(0);
+        assertFalse(frame.isSpare());
+    }
+
+    @Test
+    @DisplayName("Test Spare Calculations")
+    public void testCalculateSpare() {
+        frame.setScore(10);
+        frame.setCurrentGameScore(20);
+        frame.calculateSpare(5);
         assertAll(
-                () -> assertEquals(2, frame.getScore()),
-                () -> assertEquals(2, frame.getCurrentGameScore())
+                () -> assertEquals(15, frame.getScore()),
+                () -> assertEquals(25, frame.getCurrentGameScore())
+        );
+    }
+
+    @Test
+    @DisplayName("Test Strike Calculations")
+    public void testCalculateStrike() {
+        frame.setScore(10);
+        frame.setCurrentGameScore(20);
+        frame.calculateStrike(5);
+        assertAll(
+                () -> assertEquals(15, frame.getScore()),
+                () -> assertEquals(25, frame.getCurrentGameScore())
         );
     }
 }

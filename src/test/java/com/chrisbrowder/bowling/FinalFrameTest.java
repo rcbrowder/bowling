@@ -1,6 +1,5 @@
 package com.chrisbrowder.bowling;
 
-import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,10 +26,7 @@ public class FinalFrameTest {
     @DisplayName("Test Score on First Roll")
     public void testScoreOnFirstRoll() {
         finalFrame.roll(1);
-        assertAll(
-                () -> assertEquals(1, finalFrame.getScore()),
-                () -> assertEquals(1, finalFrame.getCurrentGameScore())
-        );
+        assertEquals(1, finalFrame.getScore());
     }
 
     @Test
@@ -49,10 +45,7 @@ public class FinalFrameTest {
     public void testScoreOnSecondRoll() {
         finalFrame.roll(1);
         finalFrame.roll(1);
-        assertAll(
-                () -> assertEquals(2, finalFrame.getScore()),
-                () -> assertEquals(2, finalFrame.getCurrentGameScore())
-        );
+        assertEquals(2, finalFrame.getScore());
     }
 
     @Test
@@ -75,5 +68,25 @@ public class FinalFrameTest {
         finalFrame.roll(9);
         finalFrame.roll(1);
         assertEquals(10, finalFrame.getScore());
+    }
+
+    @Test
+    @DisplayName("Test Spare")
+    public void testSpare() {
+        finalFrame.roll(9);
+        finalFrame.roll(1);
+        finalFrame.roll(9);
+
+        assertEquals(19, finalFrame.getScore());
+    }
+
+    @Test
+    @DisplayName("Test Three Strikes")
+    public void testThreeStrikes() {
+        finalFrame.roll(10);
+        finalFrame.roll(10);
+        finalFrame.roll(10);
+
+        assertEquals(50, finalFrame.getScore());
     }
 }

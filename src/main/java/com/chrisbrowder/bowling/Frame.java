@@ -1,19 +1,16 @@
 package com.chrisbrowder.bowling;
 
-import lombok.Getter;
-@Getter
+import lombok.Data;
+
+@Data
 public class Frame {
     protected Integer firstRoll;
     protected Integer secondRoll;
+    protected boolean closed = false;
     protected Integer score = 0;
     protected Integer currentGameScore;
-    protected boolean closed = false;
 
-    /**
-     * Sets frame state after player roll.
-     *
-     * @param pins Number of pins knocked down
-     */
+
     public void roll(int pins) {
         if (firstRoll == null) {
             firstRoll = pins;
@@ -26,6 +23,30 @@ public class Frame {
             score += pins;
             closed = true;
         }
-        currentGameScore = firstRoll + (secondRoll != null ? secondRoll : 0);
+    }
+
+    public boolean isSpare() {
+        if (firstRoll != null && secondRoll != null) {
+            return 10 == firstRoll + secondRoll;
+        }
+        return false;
+    }
+
+    public void calculateSpare(int pins) {
+        score += pins;
+        currentGameScore += pins;
+    }
+
+    public void calculateStrike(int pins) {
+        score += pins;
+        currentGameScore += pins;
+    }
+
+    public boolean isStrike() {
+        return firstRoll == 10;
+    }
+
+    public Integer getThirdRoll() {
+        return null;
     }
 }
