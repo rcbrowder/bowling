@@ -66,7 +66,7 @@ public class FrameTest {
     public void testCalculateSpare() {
         frame.setScore(10);
         frame.setCurrentGameScore(20);
-        frame.calculateSpare(5);
+        frame.addBonusPinsToScore(5);
         assertAll(
                 () -> assertEquals(15, frame.getScore()),
                 () -> assertEquals(25, frame.getCurrentGameScore())
@@ -78,7 +78,7 @@ public class FrameTest {
     public void testCalculateStrike() {
         frame.setScore(10);
         frame.setCurrentGameScore(20);
-        frame.calculateStrike(5);
+        frame.addBonusPinsToScore(5);
         assertAll(
                 () -> assertEquals(15, frame.getScore()),
                 () -> assertEquals(25, frame.getCurrentGameScore())

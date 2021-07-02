@@ -9,7 +9,6 @@ import java.util.List;
 public class Scoreboard {
     final int totalFrames;
     List<Frame> frames = new ArrayList<>();
-    List<Integer> rolls = new ArrayList<>();
     private int totalGameScore = 0;
     private int currentFrameIndex = 0;
 
@@ -33,31 +32,43 @@ public class Scoreboard {
      * @param pins Number of pins knocked down on roll.
      */
     public void roll(int pins) {
-        rolls.add(pins);
         Frame currentFrame = frames.get(currentFrameIndex);
         currentFrame.roll(pins);
-        if (currentRollFollowsSpare(currentFrame) && currentFrame.getSecondRoll() == null) {
-            frames.get(currentFrameIndex - 1).calculateSpare(pins);
-            totalGameScore += pins;
-        }
-        if (currentRollFollowsStrike()
-                && (currentFrame.getClass() != FinalFrame.class || currentFrame.getThirdRoll() != null )) {
-            calculateStrikeForPreviousFrames(currentFrame, pins);
-            totalGameScore += pins;
-        }
+        calculateBonusPinsForSpareOrStrike(currentFrame, pins);
         if (currentFrame.isClosed()) {
             setCurrentGameScoreForFrameAndScoreboard(currentFrame);
         }
         printScoreboard();
     }
 
-    //TODO: Move strike calculations to frame
-    private void calculateStrikeForPreviousFrames(Frame currentFrame, int pins) {
+    /**
+     * Adds bonus points to score to appropriate frames for spares and strikes.
+     * @param currentFrame Current Frame.
+     * @param pins Number of pins knocked down on roll.
+     */
+    private void calculateBonusPinsForSpareOrStrike(Frame currentFrame, int pins) {
+        // If the current roll follows a spare and is the first roll of a frame add bonus pins
+        if (currentRollFollowsSpare(currentFrame) && currentFrame.getSecondRoll() == null) {
+            frames.get(currentFrameIndex - 1).addBonusPinsToScore(pins);
+            totalGameScore += pins;
+        }
+        if (currentRollFollowsStrike(currentFrame) && (!isFinalFrame() || currentFrame.getThirdRoll() != null )) {
+            calculateStrikeForPreviousTwoFrames(currentFrame, pins);
+            totalGameScore += pins;
+        }
+    }
+
+    /**
+     * Helper function for adding bonus pins to appropriate frames after strikes.
+     * @param currentFrame Current Frame.
+     * @param pins Number of pins knocked down on roll.
+     */
+    private void calculateStrikeForPreviousTwoFrames(Frame currentFrame, int pins) {
         if (currentFrameIndex > 0 && frames.get(currentFrameIndex - 1).isStrike()) {
-            frames.get(currentFrameIndex - 1).calculateStrike(pins);
+            frames.get(currentFrameIndex - 1).addBonusPinsToScore(pins);
         }
         if (currentFrameIndex > 1 && currentFrame.getSecondRoll() == null && frames.get(currentFrameIndex - 2).isStrike()) {
-            frames.get(currentFrameIndex - 2).calculateStrike(pins);
+            frames.get(currentFrameIndex - 2).addBonusPinsToScore(pins);
             totalGameScore += currentFrame.getScore();
         }
     }
@@ -67,7 +78,7 @@ public class Scoreboard {
      * @param currentFrame Current Frame.
      */
     private boolean currentRollFollowsSpare(Frame currentFrame) {
-        if (currentFrame.getClass() == FinalFrame.class && currentFrame.getThirdRoll() != null ) {
+        if (isFinalFrame() && currentFrame.getThirdRoll() != null ) {
             return currentFrame.isSpare();
         }
         return currentFrameIndex > 0 && frames.get(currentFrameIndex - 1).isSpare() && currentFrame.getSecondRoll() == null;
@@ -77,9 +88,13 @@ public class Scoreboard {
     /**
      * Determines whether the current roll should be added to a previous frames total score due to a strike.
      */
-    private boolean currentRollFollowsStrike() {
-        //TODO: Refactor to get rid of 'rolls' var
-        return (rolls.size() > 1 && rolls.get(rolls.size() - 2) == 10) || (rolls.size() > 2 && rolls.get(rolls.size() - 3) == 10);
+    private boolean currentRollFollowsStrike(Frame currentFrame) {
+        boolean previousRollIsStrike = currentFrameIndex > 0 && frames.get(currentFrameIndex - 1).isStrike();
+        boolean secondPreviousRollIsStrike = currentFrameIndex > 1 && frames.get(currentFrameIndex - 2).isStrike();
+        if (isFinalFrame() && currentFrame.getSecondRoll() != null) {
+            return currentFrame.isStrike() || previousRollIsStrike;
+        }
+        return previousRollIsStrike || secondPreviousRollIsStrike;
     }
 
     /**
@@ -90,6 +105,10 @@ public class Scoreboard {
         totalGameScore += currentFrame.score;
         currentFrame.setCurrentGameScore(totalGameScore);
         currentFrameIndex++;
+    }
+
+    private boolean isFinalFrame() {
+        return currentFrameIndex == totalFrames - 1;
     }
 
     /**

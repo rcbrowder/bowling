@@ -2,6 +2,7 @@ package com.chrisbrowder.bowling;
 
 import lombok.Data;
 
+//TODO: Remove unnecessary getters/setters
 @Data
 public class Frame {
     protected Integer firstRoll;
@@ -47,18 +48,11 @@ public class Frame {
         return firstRoll == 10;
     }
 
-    //TODO: Combine following calculation methods into 'addBonusPinsToScore'
-
     /**
      * Adds bonus pins to score in the case of a spare or strike.
      * @param pins Number of pins knocked down on roll.
      */
-    public void calculateSpare(int pins) {
-        score += pins;
-        currentGameScore += pins;
-    }
-
-    public void calculateStrike(int pins) {
+    public void addBonusPinsToScore(int pins) {
         score += pins;
         currentGameScore += pins;
     }
