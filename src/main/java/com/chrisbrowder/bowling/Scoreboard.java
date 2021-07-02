@@ -111,7 +111,6 @@ public class Scoreboard {
         return currentFrameIndex == totalFrames - 1;
     }
 
-    //TODO: Break into smaller functions.
     /**
      * Prints the scoreboard.
      */
@@ -123,7 +122,7 @@ public class Scoreboard {
             Frame frame = frames.get(i);
             if (i != totalFrames - 1) {
                 if (frame.getFirstRoll() != null) {
-                    String firstRollPrintString = rollToPrintString(frame.getFirstRoll());
+                    String firstRollPrintString = convertRollIntegerToPrintString(frame.getFirstRoll());
                     rolls = rolls.replaceFirst("  ", firstRollPrintString);
                 }
                 if (frame.getSecondRoll() != null || (frame.getFirstRoll() != null && frame.isStrike())) {
@@ -133,17 +132,17 @@ public class Scoreboard {
                     } else if (frame.isStrike()) {
                         secondRollPrintString = " -";
                     } else {
-                        secondRollPrintString = rollToPrintString(frame.getSecondRoll());
+                        secondRollPrintString = convertRollIntegerToPrintString(frame.getSecondRoll());
                     }
                     rolls = rolls.replaceFirst("  ", secondRollPrintString);
                 }
                 if (frame.getCurrentGameScore() != null) {
-                    String scorePrintString = scoreToPrintString(frame.getCurrentGameScore());
+                    String scorePrintString = convertScoreIntegerToPrintString(frame.getCurrentGameScore());
                     scores = scores.replaceFirst("     ", scorePrintString);
                 }
             } else {
                 if (frame.getFirstRoll() != null) {
-                    String firstRollPrintString = rollToPrintString(frame.getFirstRoll());
+                    String firstRollPrintString = convertRollIntegerToPrintString(frame.getFirstRoll());
                     rolls = rolls.replaceFirst("  ", firstRollPrintString);
                 }
                 if (frame.getSecondRoll() != null) {
@@ -151,16 +150,16 @@ public class Scoreboard {
                     if (frame.isSpare()) {
                         secondRollPrintString = " /";
                     } else {
-                        secondRollPrintString = rollToPrintString(frame.getSecondRoll());
+                        secondRollPrintString = convertRollIntegerToPrintString(frame.getSecondRoll());
                     }
                     rolls = rolls.replaceFirst("  ", secondRollPrintString);
                 }
                 if (frame.getThirdRoll() != null) {
-                    String thirdRollPrintString = rollToPrintString(frame.getThirdRoll());
+                    String thirdRollPrintString = convertRollIntegerToPrintString(frame.getThirdRoll());
                     rolls = rolls.replaceFirst("  ", thirdRollPrintString);
                 }
                 if (frame.getCurrentGameScore() != null) {
-                    String scorePrintString = scoreToPrintString(frame.getCurrentGameScore());
+                    String scorePrintString = convertScoreIntegerToPrintString(frame.getCurrentGameScore());
                     scores = scores.replaceFirst("     ", scorePrintString);
                 }
             }
@@ -176,7 +175,7 @@ public class Scoreboard {
      * @param score Score being inserted into the scoreboard.
      * @return Centered score string.
      */
-    private String scoreToPrintString(Integer score) {
+    private String convertScoreIntegerToPrintString(Integer score) {
         if (score < 10) {
             return "  " + score + "  ";
         } else if (score < 100) {
@@ -191,7 +190,7 @@ public class Scoreboard {
      * @param roll Roll being inserted into the scoreboard.
      * @return Roll string.
      */
-    private String rollToPrintString(Integer roll) {
+    private String convertRollIntegerToPrintString(Integer roll) {
         if (roll == 10) {
             return " X";
         } else {
