@@ -52,19 +52,21 @@ public class FrameTest {
     @Test
     @DisplayName("Test Spare Check")
     public void testIsSpare() {
-        frame.setFirstRoll(9);
-        frame.setSecondRoll(1);
+        frame.roll(9);
+        frame.roll(1);
         assertTrue(frame.isSpare());
 
-        frame.setFirstRoll(0);
-        frame.setSecondRoll(0);
+        frame = new Frame();
+        frame.roll(0);
+        frame.roll(0);
         assertFalse(frame.isSpare());
     }
 
     @Test
     @DisplayName("Test Spare Calculations")
     public void testCalculateSpare() {
-        frame.setScore(10);
+        frame.roll(0);
+        frame.roll(10);
         frame.setCurrentGameScore(20);
         frame.addBonusPinsToScore(5);
         assertAll(
@@ -76,7 +78,7 @@ public class FrameTest {
     @Test
     @DisplayName("Test Strike Calculations")
     public void testCalculateStrike() {
-        frame.setScore(10);
+        frame.roll(10);
         frame.setCurrentGameScore(20);
         frame.addBonusPinsToScore(5);
         assertAll(

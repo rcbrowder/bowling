@@ -102,7 +102,7 @@ public class Scoreboard {
      * @param currentFrame Current Frame.
      */
     private void setCurrentGameScoreForFrameAndScoreboard(Frame currentFrame) {
-        totalGameScore += currentFrame.score;
+        totalGameScore += currentFrame.getScore();
         currentFrame.setCurrentGameScore(totalGameScore);
         currentFrameIndex++;
     }
@@ -111,6 +111,7 @@ public class Scoreboard {
         return currentFrameIndex == totalFrames - 1;
     }
 
+    //TODO: Break into smaller functions.
     /**
      * Prints the scoreboard.
      */

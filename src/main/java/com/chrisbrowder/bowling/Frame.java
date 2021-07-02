@@ -1,15 +1,16 @@
 package com.chrisbrowder.bowling;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-//TODO: Remove unnecessary getters/setters
-@Data
+@Getter
 public class Frame {
     protected Integer firstRoll;
     protected Integer secondRoll;
     protected boolean closed = false;
     protected Integer score = 0;
-    protected Integer currentGameScore;
+    @Setter protected Integer currentGameScore;
 
     /**
      * Sets new Frame state following roll.
