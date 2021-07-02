@@ -13,6 +13,11 @@ public class Scoreboard {
     private int totalGameScore = 0;
     private int currentFrameIndex = 0;
 
+    /**
+     * Scoreboard constructor. Standard game of bowling is 10 frames but this implementation leaves room for
+     * non-standard game lengths.
+     * @param totalFrames Total frames in the game.
+     */
     public Scoreboard(int totalFrames) {
         this.totalFrames = totalFrames;
         for (int i = 0; i < totalFrames - 1; i++) {
@@ -23,6 +28,10 @@ public class Scoreboard {
         frames.add(finalFrame);
     }
 
+    /**
+     * This method updates the scoreboard on each roll and prints the result.
+     * @param pins Number of pins knocked down on roll.
+     */
     public void roll(int pins) {
         rolls.add(pins);
         Frame currentFrame = frames.get(currentFrameIndex);
@@ -42,6 +51,7 @@ public class Scoreboard {
         printScoreboard();
     }
 
+    //TODO: Move strike calculations to frame
     private void calculateStrikeForPreviousFrames(Frame currentFrame, int pins) {
         if (currentFrameIndex > 0 && frames.get(currentFrameIndex - 1).isStrike()) {
             frames.get(currentFrameIndex - 1).calculateStrike(pins);
@@ -52,6 +62,10 @@ public class Scoreboard {
         }
     }
 
+    /**
+     * Determines whether the current roll should be added to a previous frames total score due to a spare.
+     * @param currentFrame Current Frame.
+     */
     private boolean currentRollFollowsSpare(Frame currentFrame) {
         if (currentFrame.getClass() == FinalFrame.class && currentFrame.getThirdRoll() != null ) {
             return currentFrame.isSpare();
@@ -59,16 +73,28 @@ public class Scoreboard {
         return currentFrameIndex > 0 && frames.get(currentFrameIndex - 1).isSpare() && currentFrame.getSecondRoll() == null;
     }
 
+
+    /**
+     * Determines whether the current roll should be added to a previous frames total score due to a strike.
+     */
     private boolean currentRollFollowsStrike() {
+        //TODO: Refactor to get rid of 'rolls' var
         return (rolls.size() > 1 && rolls.get(rolls.size() - 2) == 10) || (rolls.size() > 2 && rolls.get(rolls.size() - 3) == 10);
     }
 
+    /**
+     * Sets total score of the frame to the score up to this point in the game.
+     * @param currentFrame Current Frame.
+     */
     private void setCurrentGameScoreForFrameAndScoreboard(Frame currentFrame) {
         totalGameScore += currentFrame.score;
         currentFrame.setCurrentGameScore(totalGameScore);
         currentFrameIndex++;
     }
 
+    /**
+     * Prints the scoreboard.
+     */
     public void printScoreboard() {
         System.out.println("_".repeat(Math.max(0, (6 * (totalFrames+1)))-2));
         String rolls = "|  ".repeat(Math.max(0, (2 * (totalFrames)))) + "|  |";
@@ -125,6 +151,11 @@ public class Scoreboard {
         System.out.println(macron.repeat(Math.max(0, (6 * (totalFrames+1)))-2));
     }
 
+    /**
+     * Converts score Integer to print String that is centered for aesthetic purposes.
+     * @param score Score being inserted into the scoreboard.
+     * @return Centered score string.
+     */
     private String scoreToPrintString(Integer score) {
         if (score < 10) {
             return "  " + score + "  ";
@@ -135,6 +166,11 @@ public class Scoreboard {
         }
     }
 
+    /**
+     * Converts roll Integer to print String with score replaced by strike symbol (X) when applicable.
+     * @param roll Roll being inserted into the scoreboard.
+     * @return Roll string.
+     */
     private String rollToPrintString(Integer roll) {
         if (roll == 10) {
             return " X";

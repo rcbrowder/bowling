@@ -10,7 +10,10 @@ public class Frame {
     protected Integer score = 0;
     protected Integer currentGameScore;
 
-
+    /**
+     * Sets new Frame state following roll.
+     * @param pins Number of pins knocked down on roll.
+     */
     public void roll(int pins) {
         if (firstRoll == null) {
             firstRoll = pins;
@@ -25,6 +28,10 @@ public class Frame {
         }
     }
 
+    /**
+     * Determines if a spare has been achieved in a Frame.
+     * @return isSpare boolean.
+     */
     public boolean isSpare() {
         if (firstRoll != null && secondRoll != null) {
             return 10 == firstRoll + secondRoll;
@@ -32,6 +39,20 @@ public class Frame {
         return false;
     }
 
+    /**
+     * Determines if a strike has been achieved in a Frame.
+     * @return isStrike boolean.
+     */
+    public boolean isStrike() {
+        return firstRoll == 10;
+    }
+
+    //TODO: Combine following calculation methods into 'addBonusPinsToScore'
+
+    /**
+     * Adds bonus pins to score in the case of a spare or strike.
+     * @param pins Number of pins knocked down on roll.
+     */
     public void calculateSpare(int pins) {
         score += pins;
         currentGameScore += pins;
@@ -40,10 +61,6 @@ public class Frame {
     public void calculateStrike(int pins) {
         score += pins;
         currentGameScore += pins;
-    }
-
-    public boolean isStrike() {
-        return firstRoll == 10;
     }
 
     public Integer getThirdRoll() {
