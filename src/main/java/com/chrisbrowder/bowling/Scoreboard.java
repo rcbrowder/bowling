@@ -33,12 +33,26 @@ public class Scoreboard {
      */
     public void roll(int pins) {
         Frame currentFrame = frames.get(currentFrameIndex);
+        if (!inputIsValid(currentFrame, pins)) {
+            System.out.println("Illegal number of pins.");
+            return;
+        }
         currentFrame.roll(pins);
         calculateBonusPinsForSpareOrStrike(currentFrame, pins);
         if (currentFrame.isClosed()) {
             setCurrentGameScoreForFrameAndScoreboard(currentFrame);
         }
         printScoreboard();
+    }
+
+    private boolean inputIsValid(Frame currentFrame, int pins) {
+        int pinsRemaining = currentFrame.getFirstRoll() == null ? 10 : 10 - currentFrame.getFirstRoll();
+        boolean inputLessThanZero = pins < 0;
+        boolean rollTwoExceedsRemainingPins = !isFinalFrame() && pins > pinsRemaining;
+        boolean rollTwoExceedsRemainingPinsForFinalFrame =
+                isFinalFrame() && !currentFrame.isStrike() && currentFrame.getSecondRoll() == null && pins > pinsRemaining;
+        return !inputLessThanZero && !rollTwoExceedsRemainingPins
+                && !rollTwoExceedsRemainingPinsForFinalFrame;
     }
 
     /**

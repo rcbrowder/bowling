@@ -1,6 +1,5 @@
 package com.chrisbrowder.bowling;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -46,7 +45,7 @@ public class Frame {
      * @return isStrike boolean.
      */
     public boolean isStrike() {
-        return firstRoll == 10;
+        return firstRoll != null && firstRoll == 10;
     }
 
     /**
