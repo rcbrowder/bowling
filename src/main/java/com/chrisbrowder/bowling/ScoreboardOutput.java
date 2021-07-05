@@ -3,62 +3,110 @@ package com.chrisbrowder.bowling;
 import java.util.List;
 
 public class ScoreboardOutput {
+    private static String rolls;
+    private static String scores;
+
     /**
-     * Prints the scoreboard.
+     * Prints the scoreboard to the console in its current state.
+     * @param frames List of frames from the scoreboard.
      */
     public static void printScoreboard(List<Frame> frames) {
         int totalFrames = frames.size();
-        System.out.println("_".repeat(Math.max(0, (6 * (totalFrames+1)))-2));
-        String rolls = "|  ".repeat(Math.max(0, (2 * (totalFrames)))) + "|  |";
-        String scores = "|     ".repeat(Math.max(0, totalFrames)) + "   |";
+        printTopLineOfScoreboard(totalFrames);
+        rolls = "|  ".repeat(Math.max(0, (2 * (totalFrames)))) + "|  |";
+        scores = "|     ".repeat(totalFrames) + "   |";
         for (int i = 0; i < totalFrames; i++) {
             Frame frame = frames.get(i);
             if (i != totalFrames - 1) {
-                if (frame.getFirstRoll() != null) {
-                    String firstRollPrintString = convertRollIntegerToPrintString(frame.getFirstRoll());
-                    rolls = rolls.replaceFirst("  ", firstRollPrintString);
-                }
-                if (frame.getSecondRoll() != null || (frame.getFirstRoll() != null && frame.isStrike())) {
-                    String secondRollPrintString;
-                    if (frame.isSpare()) {
-                        secondRollPrintString = " /";
-                    } else if (frame.isStrike()) {
-                        secondRollPrintString = " -";
-                    } else {
-                        secondRollPrintString = convertRollIntegerToPrintString(frame.getSecondRoll());
-                    }
-                    rolls = rolls.replaceFirst("  ", secondRollPrintString);
-                }
-                if (frame.getCurrentGameScore() != null) {
-                    String scorePrintString = convertScoreIntegerToPrintString(frame.getCurrentGameScore());
-                    scores = scores.replaceFirst("     ", scorePrintString);
-                }
+                printDefaultFrame(frame);
             } else {
-                if (frame.getFirstRoll() != null) {
-                    String firstRollPrintString = convertRollIntegerToPrintString(frame.getFirstRoll());
-                    rolls = rolls.replaceFirst("  ", firstRollPrintString);
-                }
-                if (frame.getSecondRoll() != null) {
-                    String secondRollPrintString;
-                    if (frame.isSpare()) {
-                        secondRollPrintString = " /";
-                    } else {
-                        secondRollPrintString = convertRollIntegerToPrintString(frame.getSecondRoll());
-                    }
-                    rolls = rolls.replaceFirst("  ", secondRollPrintString);
-                }
-                if (frame.getThirdRoll() != null) {
-                    String thirdRollPrintString = convertRollIntegerToPrintString(frame.getThirdRoll());
-                    rolls = rolls.replaceFirst("  ", thirdRollPrintString);
-                }
-                if (frame.getCurrentGameScore() != null) {
-                    String scorePrintString = convertScoreIntegerToPrintString(frame.getCurrentGameScore());
-                    scores = scores.replaceFirst("     ", scorePrintString);
-                }
+                printFinalFrame(frame);
             }
         }
         System.out.println(rolls);
         System.out.println(scores);
+        printBottomLineOfScoreboard(totalFrames);
+    }
+
+
+    /**
+     * Print default frame to scoreboard.
+     * @param frame Current frame.
+     */
+    private static void printDefaultFrame(Frame frame) {
+        printFirstRoll(frame);
+        if (frame.getSecondRoll() != null || (frame.getFirstRoll() != null && frame.isStrike())) {
+            String secondRollPrintString;
+            if (frame.isSpare()) {
+                secondRollPrintString = " /";
+            } else if (frame.isStrike()) {
+                secondRollPrintString = " -";
+            } else {
+                secondRollPrintString = convertRollIntegerToPrintString(frame.getSecondRoll());
+            }
+            rolls = rolls.replaceFirst("  ", secondRollPrintString);
+        }
+        printCurrentGameScore(frame);
+    }
+
+    /**
+     * Print final frame to scoreboard.
+     * @param frame Current frame.
+     */
+    private static void printFinalFrame(Frame frame) {
+        printFirstRoll(frame);
+        if (frame.getSecondRoll() != null) {
+            String secondRollPrintString;
+            if (frame.isSpare()) {
+                secondRollPrintString = " /";
+            } else {
+                secondRollPrintString = convertRollIntegerToPrintString(frame.getSecondRoll());
+            }
+            rolls = rolls.replaceFirst("  ", secondRollPrintString);
+        }
+        if (frame.getThirdRoll() != null) {
+            String thirdRollPrintString = convertRollIntegerToPrintString(frame.getThirdRoll());
+            rolls = rolls.replaceFirst("  ", thirdRollPrintString);
+        }
+        printCurrentGameScore(frame);
+    }
+
+    /**
+     * Replaces the next empty space on the scoreboard with the number of pins knocked down on the first roll.
+     * @param frame Current frame.
+     */
+    private static void printFirstRoll(Frame frame) {
+        if (frame.getFirstRoll() != null) {
+            String firstRollPrintString = convertRollIntegerToPrintString(frame.getFirstRoll());
+            rolls = rolls.replaceFirst("  ", firstRollPrintString);
+        }
+    }
+
+    /**
+     * Replaces the empty space on the "score" portion of the scoreboard with the most up to date current game score
+     * for the current frame.
+     * @param frame Current frame.
+     */
+    private static void printCurrentGameScore(Frame frame) {
+        if (frame.getCurrentGameScore() != null) {
+            String scorePrintString = convertScoreIntegerToPrintString(frame.getCurrentGameScore());
+            scores = scores.replaceFirst("     ", scorePrintString);
+        }
+    }
+
+    /**
+     * Prints line of underscores for the top line of the scoreboard.
+     * @param totalFrames Number of frames in the scoreboard.
+     */
+    private static void printTopLineOfScoreboard(int totalFrames) {
+        System.out.println("_".repeat(Math.max(0, (6 * (totalFrames+1)))-2));
+    }
+
+    /**
+     * Prints line of macrons for the bottom line of the scoreboard.
+     * @param totalFrames Number of frames in the scoreboard.
+     */
+    private static void printBottomLineOfScoreboard(int totalFrames) {
         String macron = Character.toString((char)175);
         System.out.println(macron.repeat(Math.max(0, (6 * (totalFrames+1)))-2));
     }
