@@ -4,9 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public class Frame {
+class Frame implements IFrame{
     protected Integer firstRoll;
     protected Integer secondRoll;
+    protected Integer thirdRoll;
     protected boolean closed = false;
     protected Integer score = 0;
     @Setter protected Integer currentGameScore;
@@ -57,7 +58,15 @@ public class Frame {
         currentGameScore += pins;
     }
 
-    public Integer getThirdRoll() {
-        return null;
+    /**
+     * Tests if user integer input is a valid roll for current frame state.
+     * @param pins Number of pins knocked down on roll.
+     * @return Boolean asserting if use input is valid or not.
+     */
+    public boolean isInputValid(int pins) {
+        int pinsRemaining = firstRoll == null ? 10 : 10 - firstRoll;
+        boolean inputLessThanZero = pins < 0;
+        boolean rollTwoExceedsRemainingPins = pins > pinsRemaining;
+        return !inputLessThanZero && !rollTwoExceedsRemainingPins;
     }
 }

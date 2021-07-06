@@ -1,9 +1,6 @@
 package com.chrisbrowder.bowling;
 
-import lombok.Getter;
-
 public class FinalFrame extends Frame {
-    @Getter private Integer thirdRoll;
 
     /**
      * Sets new FinalFrame state following roll.
@@ -13,40 +10,33 @@ public class FinalFrame extends Frame {
     public void roll(int pins) {
         if (firstRoll == null) {
             firstRoll = pins;
-            score = pins;
         } else if (secondRoll == null) {
             secondRoll = pins;
-            score += pins;
-            if (!isSpare() && !finalFrameIsStrike()) {
+            if (!isSpare() && !isStrike()) {
                 closed = true;
-            } else if (finalFrameIsStrike()) {
+            } else if (isStrike()) {
                 score += pins;
             }
         } else {
             thirdRoll = pins;
-            score += pins;
-            if (finalFrameIsStrike()) {
+            if (isStrike()) {
                 score += pins;
             }
             closed = true;
         }
+        score += pins;
     }
 
     /**
-     * Determines if a spare has been achieved in a Frame.
-     * @return isSpare boolean.
+     * Tests if user integer input is a valid roll for current frame state.
+     * @param pins Number of pins knocked down on roll.
+     * @return Boolean asserting if use input is valid or not.
      */
     @Override
-    public boolean isSpare() {
-        if (firstRoll != null && secondRoll != null) return firstRoll + secondRoll == 10;
-        return false;
-    }
-
-    /**
-     * Determines if a strike has been achieved in a Frame.
-     * @return isStrike boolean.
-     */
-    private boolean finalFrameIsStrike() {
-        return firstRoll == 10;
+    public boolean isInputValid(int pins) {
+        int pinsRemaining = firstRoll == null ? 10 : 10 - firstRoll;
+        boolean inputLessThanZero = pins < 0;
+        boolean rollTwoExceedsRemainingPinsForFinalFrame = !isStrike() && secondRoll == null && pins > pinsRemaining;
+        return !inputLessThanZero && !rollTwoExceedsRemainingPinsForFinalFrame;
     }
 }
